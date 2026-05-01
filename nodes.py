@@ -40,6 +40,52 @@ def load_config() -> dict[str, Any]:
 CONFIG = load_config()
 
 
+_PROMPT_GENERATOR = None
+
+
+def get_prompt_generator():
+    global _PROMPT_GENERATOR
+
+    if _PROMPT_GENERATOR is None:
+        try:
+            from dynamicprompts.generators import RandomPromptGenerator
+        except ImportError as error:
+            raise ImportError(
+                "ComfyUI-Complex-Prompt requires the 'dynamicprompts' package. "
+                "Install this extension's requirements.txt dependencies."
+            ) from error
+
+        _PROMPT_GENERATOR = RandomPromptGenerator()
+
+    return _PROMPT_GENERATOR
+
+
+class ArtemKo7vComplexPrompt:
+    CATEGORY = "ArtemKo7v"
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("string",)
+    FUNCTION = "generate_prompt"
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": (
+                    "STRING",
+                    {
+                        "multiline": True,
+                        "dynamicPrompts": False,
+                    },
+                ),
+            },
+        }
+
+    def generate_prompt(self, prompt: str):
+        generator = get_prompt_generator()
+        prompts = generator.generate(prompt, 1)
+        return (prompts[0] if prompts else "",)
+
+
 class ArtemKo7vComplexPromptEmptyString:
     CATEGORY = "ArtemKo7v"
     RETURN_TYPES = ("STRING",)
@@ -55,9 +101,11 @@ class ArtemKo7vComplexPromptEmptyString:
 
 
 NODE_CLASS_MAPPINGS = {
+    "ArtemKo7vComplexPrompt": ArtemKo7vComplexPrompt,
     "ArtemKo7vComplexPromptEmptyString": ArtemKo7vComplexPromptEmptyString,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "ArtemKo7vComplexPrompt": "Complex Prompt",
     "ArtemKo7vComplexPromptEmptyString": "Complex Prompt Empty String",
 }
