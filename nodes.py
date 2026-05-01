@@ -81,10 +81,10 @@ def restore_vars(prompt: str, placeholders: dict[str, str]) -> str:
     return prompt
 
 
-def generate_dynamic_prompt(prompt: str) -> str:
+def generate_dynamic_prompt(prompt: str, seed: int) -> str:
     masked_prompt, placeholders = mask_vars(prompt)
     generator = get_prompt_generator()
-    prompts = generator.generate(masked_prompt, 1)
+    prompts = generator.generate(masked_prompt, 1, seeds=seed)
     generated_prompt = prompts[0] if prompts else ""
     return restore_vars(generated_prompt, placeholders)
 
@@ -121,6 +121,15 @@ class ArtemKo7vComplexPrompt:
                         "dynamicPrompts": False,
                     },
                 ),
+                "seed": (
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": 0,
+                        "max": 18446744073709551615,
+                        "control_after_generate": "randomize",
+                    },
+                ),
             },
             "optional": {
                 "vars": (ARTEMKO7V_COMPLEX_PROMPT_VARS,),
@@ -130,9 +139,10 @@ class ArtemKo7vComplexPrompt:
     def generate_prompt(
         self,
         prompt: str,
+        seed: int,
         vars: dict[str, str] | None = None,
     ):
-        generated_prompt = generate_dynamic_prompt(prompt)
+        generated_prompt = generate_dynamic_prompt(prompt, seed)
         return (apply_vars(generated_prompt, vars),)
 
 
@@ -159,6 +169,15 @@ class ArtemKo7vComplexPropmptSetVariable:
                         "dynamicPrompts": False,
                     },
                 ),
+                "seed": (
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": 0,
+                        "max": 18446744073709551615,
+                        "control_after_generate": "randomize",
+                    },
+                ),
             },
             "optional": {
                 "vars": (ARTEMKO7V_COMPLEX_PROMPT_VARS,),
@@ -169,10 +188,11 @@ class ArtemKo7vComplexPropmptSetVariable:
         self,
         variable_name: str,
         value: str,
+        seed: int,
         vars: dict[str, str] | None = None,
     ):
         result = dict(vars or {})
-        generated_value = generate_dynamic_prompt(value)
+        generated_value = generate_dynamic_prompt(value, seed)
         result[variable_name] = apply_vars(generated_value, vars)
         return (result,)
 

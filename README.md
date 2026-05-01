@@ -29,6 +29,7 @@ $person in a {red|green|blue} car
 
 If `person` exists in `vars`, `$person` is replaced with its value.
 Variable tokens are preserved while `dynamicprompts` is parsing the prompt.
+The `seed` input is randomized after generation and is passed to `dynamicprompts`.
 
 ### Complex Prompt Set Variable
 
@@ -38,6 +39,7 @@ Creates or extends an `ComplexPromptVars` object.
 - `variable_name` is the key.
 - `value` is multiline text expanded through `dynamicprompts`, then `$variable_name`
   tokens are replaced from the input `vars` before it is stored.
+- `seed` is randomized after generation and is passed to `dynamicprompts`.
 
 ## Configuration
 
