@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -67,6 +68,20 @@ def generate_dynamic_prompt(prompt: str) -> str:
     return prompts[0] if prompts else ""
 
 
+def apply_vars(prompt: str, vars: dict[str, str] | None = None) -> str:
+    if not vars:
+        return prompt
+
+    def replace(match: re.Match[str]) -> str:
+        variable_name = match.group(1)
+        if variable_name not in vars:
+            return match.group(0)
+
+        return str(vars[variable_name])
+
+    return re.sub(r"\$([A-Za-z_][A-Za-z0-9_]*)", replace, prompt)
+
+
 class ArtemKo7vComplexPrompt:
     CATEGORY = "ArtemKo7v"
     RETURN_TYPES = ("STRING",)
@@ -85,10 +100,18 @@ class ArtemKo7vComplexPrompt:
                     },
                 ),
             },
+            "optional": {
+                "vars": (ARTEMKO7V_COMPLEX_PROMPT_VARS,),
+            },
         }
 
-    def generate_prompt(self, prompt: str):
-        return (generate_dynamic_prompt(prompt),)
+    def generate_prompt(
+        self,
+        prompt: str,
+        vars: dict[str, str] | None = None,
+    ):
+        generated_prompt = generate_dynamic_prompt(prompt)
+        return (apply_vars(generated_prompt, vars),)
 
 
 class ArtemKo7vComplexPropmptSetVariable:
@@ -127,7 +150,8 @@ class ArtemKo7vComplexPropmptSetVariable:
         vars: dict[str, str] | None = None,
     ):
         result = dict(vars or {})
-        result[variable_name] = generate_dynamic_prompt(value)
+        generated_value = generate_dynamic_prompt(value)
+        result[variable_name] = apply_vars(generated_value, vars)
         return (result,)
 
 
