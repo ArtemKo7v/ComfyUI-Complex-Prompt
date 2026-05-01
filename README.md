@@ -28,6 +28,7 @@ $person in a {red|green|blue} car
 ```
 
 If `person` exists in `vars`, `$person` is replaced with its value.
+Variable tokens are preserved while `dynamicprompts` is parsing the prompt.
 
 ### Complex Prompt Set Variable
 

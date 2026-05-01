@@ -41,6 +41,7 @@ def load_config() -> dict[str, Any]:
 CONFIG = load_config()
 
 ARTEMKO7V_COMPLEX_PROMPT_VARS = "ArtemKo7vComplexPromptVars"
+VAR_PATTERN = re.compile(r"\$([A-Za-z_][A-Za-z0-9_]*)")
 
 _PROMPT_GENERATOR = None
 
@@ -62,10 +63,31 @@ def get_prompt_generator():
     return _PROMPT_GENERATOR
 
 
+def mask_vars(prompt: str) -> tuple[str, dict[str, str]]:
+    placeholders: dict[str, str] = {}
+
+    def replace(match: re.Match[str]) -> str:
+        placeholder = f"AK7VCOMPLEXPROMPTVAR{len(placeholders)}TOKEN"
+        placeholders[placeholder] = match.group(0)
+        return placeholder
+
+    return VAR_PATTERN.sub(replace, prompt), placeholders
+
+
+def restore_vars(prompt: str, placeholders: dict[str, str]) -> str:
+    for placeholder, variable in placeholders.items():
+        prompt = prompt.replace(placeholder, variable)
+
+    return prompt
+
+
 def generate_dynamic_prompt(prompt: str) -> str:
+    masked_prompt, placeholders = mask_vars(prompt)
     generator = get_prompt_generator()
-    prompts = generator.generate(prompt, 1)
-    return prompts[0] if prompts else ""
+    prompts = generator.generate(masked_prompt, 1)
+    generated_prompt = prompts[0] if prompts else ""
+    return restore_vars(generated_prompt, placeholders)
+
 
 
 def apply_vars(prompt: str, vars: dict[str, str] | None = None) -> str:
@@ -79,7 +101,7 @@ def apply_vars(prompt: str, vars: dict[str, str] | None = None) -> str:
 
         return str(vars[variable_name])
 
-    return re.sub(r"\$([A-Za-z_][A-Za-z0-9_]*)", replace, prompt)
+    return VAR_PATTERN.sub(replace, prompt)
 
 
 class ArtemKo7vComplexPrompt:
