@@ -19,6 +19,14 @@ Outputs one randomly selected variant, such as:
 a green car
 ```
 
+### Complex Prompt Set Variable
+
+Creates or extends an `ArtemKo7vComplexPromptVars` object.
+
+- `vars` is optional. If it is not connected, the node creates a new object.
+- `variable_name` is the key.
+- `value` is multiline text expanded through `dynamicprompts` before it is stored.
+
 ## Configuration
 
 The configuration file is stored at:
