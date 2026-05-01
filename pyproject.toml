@@ -6,6 +6,7 @@ version = "0.0.1"
 license = { text = "MIT" }
 dependencies  = [
     "dynamicprompts>=0.31.0",
+    "simpleeval>=1.0.7",
 ]
 
 [project.urls]

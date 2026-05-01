@@ -9,6 +9,11 @@ USER_DIR = Path(os.getcwd()) / "user" / "default"
 CONFIG_DIR = USER_DIR / "ComfyUI-Complex-Prompt"
 CONFIG_PATH = CONFIG_DIR / "config.json"
 DEFAULT_CONFIG: dict[str, Any] = {}
+CONDITION_FUNCTIONS = {
+    "float": float,
+    "int": int,
+    "str": str,
+}
 
 
 def log(message: str) -> None:
@@ -44,6 +49,58 @@ ARTEMKO7V_COMPLEX_PROMPT_VARS = "ArtemKo7vComplexPromptVars"
 VAR_PATTERN = re.compile(r"\$([A-Za-z_][A-Za-z0-9_]*)")
 
 _PROMPT_GENERATOR = None
+
+
+class ConditionValue:
+    def __init__(self, value: Any):
+        self.value = value
+
+    def __str__(self) -> str:
+        return str(self.value)
+
+    def __repr__(self) -> str:
+        return repr(str(self))
+
+    def __bool__(self) -> bool:
+        return bool(str(self))
+
+    def __int__(self) -> int:
+        return int(str(self))
+
+    def __float__(self) -> float:
+        return float(str(self))
+
+    def __eq__(self, other: Any) -> bool:
+        return str(self) == str(self.unwrap(other))
+
+    def __ne__(self, other: Any) -> bool:
+        return not self == other
+
+    def __lt__(self, other: Any) -> bool:
+        return self.compare(other, lambda left, right: left < right)
+
+    def __le__(self, other: Any) -> bool:
+        return self.compare(other, lambda left, right: left <= right)
+
+    def __gt__(self, other: Any) -> bool:
+        return self.compare(other, lambda left, right: left > right)
+
+    def __ge__(self, other: Any) -> bool:
+        return self.compare(other, lambda left, right: left >= right)
+
+    def unwrap(self, other: Any) -> Any:
+        if isinstance(other, ConditionValue):
+            return other.value
+
+        return other
+
+    def compare(self, other: Any, operation):
+        other = self.unwrap(other)
+
+        try:
+            return operation(float(self), float(other))
+        except (TypeError, ValueError):
+            return operation(str(self), str(other))
 
 
 def get_prompt_generator():
@@ -104,6 +161,46 @@ def apply_vars(prompt: str, vars: dict[str, str] | None = None) -> str:
     return VAR_PATTERN.sub(replace, prompt)
 
 
+def normalize_condition(condition: str) -> str:
+    normalized = VAR_PATTERN.sub(r"\1", condition)
+    normalized = normalized.replace("&&", " and ")
+    normalized = normalized.replace("||", " or ")
+    normalized = re.sub(r"!(?!=)", " not ", normalized)
+    return normalized
+
+
+def should_set_variable(
+    condition: str,
+    vars: dict[str, str] | None = None,
+) -> bool:
+    condition = condition.strip()
+    if not condition:
+        return True
+
+    try:
+        from simpleeval import NameNotDefined, SimpleEval
+    except ImportError as error:
+        raise ImportError(
+            "ComfyUI-Complex-Prompt conditional variables require the "
+            "'simpleeval' package. Install this extension's requirements.txt "
+            "dependencies."
+        ) from error
+
+    evaluator = SimpleEval(
+        functions=CONDITION_FUNCTIONS,
+        names={
+            key: ConditionValue(value)
+            for key, value in (vars or {}).items()
+            if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", key)
+        },
+    )
+
+    try:
+        return bool(evaluator.eval(normalize_condition(condition)))
+    except NameNotDefined:
+        return False
+
+
 class ArtemKo7vComplexPrompt:
     CATEGORY = "ArtemKo7v"
     RETURN_TYPES = ("STRING",)
@@ -148,8 +245,8 @@ class ArtemKo7vComplexPrompt:
 
 class ArtemKo7vComplexPropmptSetVariable:
     CATEGORY = "ArtemKo7v"
-    RETURN_TYPES = (ARTEMKO7V_COMPLEX_PROMPT_VARS,)
-    RETURN_NAMES = ("vars",)
+    RETURN_TYPES = (ARTEMKO7V_COMPLEX_PROMPT_VARS, "BOOLEAN")
+    RETURN_NAMES = ("vars", "wasSet")
     FUNCTION = "set_variable"
 
     @classmethod
@@ -167,6 +264,12 @@ class ArtemKo7vComplexPropmptSetVariable:
                     {
                         "multiline": True,
                         "dynamicPrompts": False,
+                    },
+                ),
+                "condition": (
+                    "STRING",
+                    {
+                        "default": "",
                     },
                 ),
                 "seed": (
@@ -188,13 +291,17 @@ class ArtemKo7vComplexPropmptSetVariable:
         self,
         variable_name: str,
         value: str,
+        condition: str,
         seed: int,
         vars: dict[str, str] | None = None,
     ):
         result = dict(vars or {})
+        if not should_set_variable(condition, vars):
+            return (result, False)
+
         generated_value = generate_dynamic_prompt(value, seed)
         result[variable_name] = apply_vars(generated_value, vars)
-        return (result,)
+        return (result, True)
 
 
 class ArtemKo7vComplexPromptEmptyString:

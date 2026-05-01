@@ -39,7 +39,20 @@ Creates or extends an `ComplexPromptVars` object.
 - `variable_name` is the key.
 - `value` is multiline text expanded through `dynamicprompts`, then `$variable_name`
   tokens are replaced from the input `vars` before it is stored.
+- `condition` is optional. If it is set, the variable is only stored when the
+  expression evaluates to true.
 - `seed` is randomized after generation and is passed to `dynamicprompts`.
+- `wasSet` is true when the variable was stored and false when the condition
+  prevented the update.
+
+Condition example:
+
+```text
+(($var1 == "1") && ($var2 == "2")) || ($var3 < 10)
+```
+
+Conditions are evaluated with `simpleeval`. `$variable` tokens are resolved from
+the input `vars`; missing variables make the condition false.
 
 ## Configuration
 
