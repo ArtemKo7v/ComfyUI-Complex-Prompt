@@ -243,7 +243,7 @@ class ArtemKo7vComplexPrompt:
         return (apply_vars(generated_prompt, vars),)
 
 
-class ArtemKo7vComplexPropmptSetVariable:
+class ArtemKo7vComplexPromptSetVariable:
     CATEGORY = "ArtemKo7v"
     RETURN_TYPES = (ARTEMKO7V_COMPLEX_PROMPT_VARS, "BOOLEAN")
     RETURN_NAMES = ("vars", "wasSet")
@@ -320,12 +320,12 @@ class ArtemKo7vComplexPromptEmptyString:
 
 NODE_CLASS_MAPPINGS = {
     "ArtemKo7vComplexPrompt": ArtemKo7vComplexPrompt,
-    "ArtemKo7vComplexPropmptSetVariable": ArtemKo7vComplexPropmptSetVariable,
+    "ArtemKo7vComplexPromptSetVariable": ArtemKo7vComplexPromptSetVariable,
     "ArtemKo7vComplexPromptEmptyString": ArtemKo7vComplexPromptEmptyString,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "ArtemKo7vComplexPrompt": "Complex Prompt",
-    "ArtemKo7vComplexPropmptSetVariable": "Complex Prompt Set Variable",
+    "ArtemKo7vComplexPromptSetVariable": "Complex Prompt Set Variable",
     "ArtemKo7vComplexPromptEmptyString": "Complex Prompt Empty String",
 }
