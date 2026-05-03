@@ -54,6 +54,36 @@ Condition example:
 Conditions are evaluated with `simpleeval`. `$variable` tokens are resolved from
 the input `vars`; missing variables make the condition false.
 
+### Complex Prompt Parse JSON
+
+Creates or extends a `ComplexPromptVars` object from a JSON string.
+
+- `json_text` must be a JSON object.
+- Object keys become variable names.
+- String and number values are copied into `vars`.
+- Boolean, null, object, empty array, and unsupported values are ignored.
+- If a value is a non-empty array of strings or numbers, one item is selected
+  randomly using `seed`.
+- `vars` is optional. If it is not connected, the node creates a new object.
+
+Example:
+
+```json
+{
+  "person": "Ada",
+  "color": ["red", "green", "blue"],
+  "age": 37
+}
+```
+
+This can produce variables such as:
+
+```text
+person = Ada
+color = green
+age = 37
+```
+
 ## Configuration
 
 The configuration file is stored at:

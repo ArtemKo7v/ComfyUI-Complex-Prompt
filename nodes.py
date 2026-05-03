@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import re
 from pathlib import Path
 from typing import Any
@@ -161,6 +162,41 @@ def apply_vars(prompt: str, vars: dict[str, str] | None = None) -> str:
     return VAR_PATTERN.sub(replace, prompt)
 
 
+def is_json_variable_value(value: Any) -> bool:
+    return isinstance(value, (int, float, str)) and not isinstance(value, bool)
+
+
+def parse_json_vars(
+    json_text: str,
+    seed: int,
+    vars: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    try:
+        parsed = json.loads(json_text)
+    except json.JSONDecodeError as error:
+        raise ValueError(f"Invalid JSON: {error.msg}") from error
+
+    if not isinstance(parsed, dict):
+        raise ValueError("JSON must be an object with variable names as keys.")
+
+    result = dict(vars or {})
+    rng = random.Random(seed)
+
+    for key, value in parsed.items():
+        if is_json_variable_value(value):
+            result[key] = value
+            continue
+
+        if (
+            isinstance(value, list)
+            and value
+            and all(is_json_variable_value(item) for item in value)
+        ):
+            result[key] = rng.choice(value)
+
+    return result
+
+
 def normalize_condition(condition: str) -> str:
     normalized = VAR_PATTERN.sub(r"\1", condition)
     normalized = normalized.replace("&&", " and ")
@@ -304,6 +340,47 @@ class ArtemKo7vComplexPromptSetVariable:
         return (result, True)
 
 
+class ArtemKo7vComplexPromptParseJSON:
+    CATEGORY = "ArtemKo7v"
+    RETURN_TYPES = (ARTEMKO7V_COMPLEX_PROMPT_VARS,)
+    RETURN_NAMES = ("vars",)
+    FUNCTION = "parse_json"
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "json_text": (
+                    "STRING",
+                    {
+                        "multiline": True,
+                        "dynamicPrompts": False,
+                    },
+                ),
+                "seed": (
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": 0,
+                        "max": 18446744073709551615,
+                        "control_after_generate": "randomize",
+                    },
+                ),
+            },
+            "optional": {
+                "vars": (ARTEMKO7V_COMPLEX_PROMPT_VARS,),
+            },
+        }
+
+    def parse_json(
+        self,
+        json_text: str,
+        seed: int,
+        vars: dict[str, Any] | None = None,
+    ):
+        return (parse_json_vars(json_text, seed, vars),)
+
+
 class ArtemKo7vComplexPromptEmptyString:
     CATEGORY = "ArtemKo7v"
     RETURN_TYPES = ("STRING",)
@@ -321,11 +398,13 @@ class ArtemKo7vComplexPromptEmptyString:
 NODE_CLASS_MAPPINGS = {
     "ArtemKo7vComplexPrompt": ArtemKo7vComplexPrompt,
     "ArtemKo7vComplexPromptSetVariable": ArtemKo7vComplexPromptSetVariable,
+    "ArtemKo7vComplexPromptParseJSON": ArtemKo7vComplexPromptParseJSON,
     "ArtemKo7vComplexPromptEmptyString": ArtemKo7vComplexPromptEmptyString,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "ArtemKo7vComplexPrompt": "Complex Prompt",
     "ArtemKo7vComplexPromptSetVariable": "Complex Prompt Set Variable",
+    "ArtemKo7vComplexPromptParseJSON": "Complex Prompt Parse JSON",
     "ArtemKo7vComplexPromptEmptyString": "Complex Prompt Empty String",
 }
