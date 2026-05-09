@@ -328,6 +328,12 @@ class ArtemKo7vComplexPromptSetVariable:
                         "control_after_generate": "randomize",
                     },
                 ),
+                "trim": (
+                    "BOOLEAN",
+                    {
+                        "default": False,
+                    },
+                ),
             },
             "optional": {
                 "vars": (ARTEMKO7V_COMPLEX_PROMPT_VARS,),
@@ -340,6 +346,7 @@ class ArtemKo7vComplexPromptSetVariable:
         value: str | None,
         condition: str,
         seed: int,
+        trim: bool = False,
         vars: dict[str, str] | None = None,
     ):
         result = dict(vars or {})
@@ -348,7 +355,11 @@ class ArtemKo7vComplexPromptSetVariable:
 
         value = "" if value is None else value
         generated_value = generate_dynamic_prompt(value, seed)
-        result[variable_name] = apply_vars(generated_value, vars)
+        stored_value = apply_vars(generated_value, vars)
+        if trim:
+            stored_value = stored_value.strip()
+
+        result[variable_name] = stored_value
         return (result, True)
 
 

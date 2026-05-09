@@ -39,6 +39,34 @@ class SetVariableNodeTests(unittest.TestCase):
 
         self.assertEqual(prompt, "Hello<>")
 
+    def test_trim_removes_surrounding_whitespace_before_storing_value(self):
+        node = nodes.ArtemKo7vComplexPromptSetVariable()
+
+        result = node.set_variable("name", "\n  Ada Lovelace \t", "", seed=1, trim=True)
+
+        self.assertEqual(result, ({"name": "Ada Lovelace"}, True))
+
+    def test_trim_false_preserves_surrounding_whitespace(self):
+        node = nodes.ArtemKo7vComplexPromptSetVariable()
+
+        result = node.set_variable("name", "\n  Ada Lovelace \t", "", seed=1)
+
+        self.assertEqual(result, ({"name": "\n  Ada Lovelace \t"}, True))
+
+    def test_trim_is_applied_after_variable_replacement(self):
+        node = nodes.ArtemKo7vComplexPromptSetVariable()
+
+        result = node.set_variable(
+            "greeting",
+            " $name ",
+            "",
+            seed=1,
+            trim=True,
+            vars={"name": "Ada"},
+        )
+
+        self.assertEqual(result, ({"name": "Ada", "greeting": "Ada"}, True))
+
 
 class ComplexPromptNodeTests(unittest.TestCase):
     def test_plain_text_with_variable_does_not_call_dynamic_prompt_generator(self):

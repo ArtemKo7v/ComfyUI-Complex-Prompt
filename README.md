@@ -44,6 +44,7 @@ Complex Prompt Empty String:
 - Replaces variables after dynamic prompt expansion
 - Passes `ComplexPromptVars` between nodes
 - Creates variables from multiline text
+- Optionally trims variable values before storing them
 - Supports conditional variable assignment with `&&`, `||`, `!`, comparisons, and `int`, `float`, `str`
 - Imports variables from JSON strings
 - Selects one random item from JSON arrays of strings or numbers
@@ -110,6 +111,7 @@ $[A-Za-z_][A-Za-z0-9_]*
 - `value`: multiline text; dynamic prompt syntax is expanded before storage
 - `condition`: optional expression; empty condition always stores the variable
 - `seed`: seed passed to `dynamicprompts`
+- `trim`: removes whitespace, newlines, and tabs from the beginning and end of the final value before storage
 - `vars`: optional existing `ComplexPromptVars`
 
 `Complex Prompt Parse JSON`:
@@ -249,6 +251,16 @@ value = dramatic
 condition = ($style == "cinematic") && ($count >= 2)
 ```
 
+Trim whitespace before storing a variable:
+
+```text
+variable_name = person
+value = 
+  Ada Lovelace
+
+trim = true
+```
+
 ## Configuration
 
 The configuration file is stored at:
@@ -263,6 +275,7 @@ The file is created automatically. The current default configuration is empty an
 
 - Dynamic prompt expansion runs before variable replacement.
 - `Complex Prompt Set Variable` also expands dynamic prompt syntax in `value` before storing it.
+- When `trim` is enabled, trimming happens after dynamic prompt expansion and variable replacement.
 - If `value` is unset, it is stored as an empty string.
 - Unknown variables remain visible as `$variable_name` instead of being removed.
 - Variable names are not currently rejected at input time, but only names matching `[A-Za-z_][A-Za-z0-9_]*` can be referenced with `$variable_name`.
