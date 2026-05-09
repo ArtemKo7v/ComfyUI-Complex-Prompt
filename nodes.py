@@ -48,6 +48,7 @@ CONFIG = load_config()
 
 ARTEMKO7V_COMPLEX_PROMPT_VARS = "ArtemKo7vComplexPromptVars"
 VAR_PATTERN = re.compile(r"\$([A-Za-z_][A-Za-z0-9_]*)")
+DYNAMIC_VARIANT_PATTERN = re.compile(r"\{[^{}]*\|[^{}]*\}")
 
 _PROMPT_GENERATOR = None
 
@@ -139,8 +140,18 @@ def restore_vars(prompt: str, placeholders: dict[str, str]) -> str:
     return prompt
 
 
-def generate_dynamic_prompt(prompt: str, seed: int) -> str:
+def has_dynamic_prompt_syntax(prompt: str) -> bool:
+    return bool(DYNAMIC_VARIANT_PATTERN.search(prompt)) or "__" in prompt
+
+
+def generate_dynamic_prompt(prompt: str | None, seed: int) -> str:
+    if prompt in (None, ""):
+        return ""
+
     masked_prompt, placeholders = mask_vars(prompt)
+    if not has_dynamic_prompt_syntax(masked_prompt):
+        return prompt
+
     generator = get_prompt_generator()
     prompts = generator.generate(masked_prompt, 1, seeds=seed)
     generated_prompt = prompts[0] if prompts else ""
