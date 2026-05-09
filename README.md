@@ -4,11 +4,15 @@ ComfyUI custom nodes for building complex text prompts with dynamic variants, wo
 
 ## Nodes
 
+Complex Prompt:
+
 - Name: `Complex Prompt`
 - Class: `ArtemKo7vComplexPrompt`
 - Description: expands a prompt with `dynamicprompts`, then replaces `$variable_name` tokens from `ComplexPromptVars`
 - Category: `ArtemKo7v`
 - Output string: `STRING`
+
+Complex Prompt Set Variable:
 
 - Name: `Complex Prompt Set Variable`
 - Class: `ArtemKo7vComplexPromptSetVariable`
@@ -17,11 +21,15 @@ ComfyUI custom nodes for building complex text prompts with dynamic variants, wo
 - Output vars: `ArtemKo7vComplexPromptVars`
 - Output wasSet: `BOOLEAN`
 
+Complex Prompt Parse JSON:
+
 - Name: `Complex Prompt Parse JSON`
 - Class: `ArtemKo7vComplexPromptParseJSON`
 - Description: creates or extends `ComplexPromptVars` from a JSON object
 - Category: `ArtemKo7v`
 - Output vars: `ArtemKo7vComplexPromptVars`
+
+Complex Prompt Empty String:
 
 - Name: `Complex Prompt Empty String`
 - Class: `ArtemKo7vComplexPromptEmptyString`
