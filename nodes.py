@@ -326,7 +326,7 @@ class ArtemKo7vComplexPromptSetVariable:
     def set_variable(
         self,
         variable_name: str,
-        value: str,
+        value: str | None,
         condition: str,
         seed: int,
         vars: dict[str, str] | None = None,
@@ -335,6 +335,7 @@ class ArtemKo7vComplexPromptSetVariable:
         if not should_set_variable(condition, vars):
             return (result, False)
 
+        value = "" if value is None else value
         generated_value = generate_dynamic_prompt(value, seed)
         result[variable_name] = apply_vars(generated_value, vars)
         return (result, True)
