@@ -208,6 +208,30 @@ def parse_json_vars(
     return result
 
 
+def parse_choice_map(choices: str) -> dict[str, str]:
+    choices = choices.strip()
+    if not choices:
+        return {}
+
+    if not choices.startswith("{"):
+        choices = "{" + choices + "}"
+
+    try:
+        parsed = json.loads(choices)
+    except json.JSONDecodeError as error:
+        raise ValueError(f"Invalid choices JSON: {error.msg}") from error
+
+    if not isinstance(parsed, dict):
+        raise ValueError("Choices must be a JSON object.")
+
+    result: dict[str, str] = {}
+    for key, value in parsed.items():
+        if is_json_variable_value(value):
+            result[str(key)] = str(value)
+
+    return result
+
+
 def normalize_condition(condition: str) -> str:
     normalized = VAR_PATTERN.sub(r"\1", condition)
     normalized = normalized.replace("&&", " and ")
@@ -363,6 +387,89 @@ class ArtemKo7vComplexPromptSetVariable:
         return (result, True)
 
 
+class ArtemKo7vComplexPromptSetVariableByChoice:
+    CATEGORY = "ArtemKo7v"
+    RETURN_TYPES = (ARTEMKO7V_COMPLEX_PROMPT_VARS, "BOOLEAN")
+    RETURN_NAMES = ("vars", "wasSet")
+    FUNCTION = "set_variable_by_choice"
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "variable_name": (
+                    "STRING",
+                    {
+                        "default": "",
+                    },
+                ),
+                "source_variable": (
+                    "STRING",
+                    {
+                        "default": "",
+                    },
+                ),
+                "choices": (
+                    "STRING",
+                    {
+                        "multiline": True,
+                        "dynamicPrompts": False,
+                        "default": '"male": "{John|Bill|Ted}", "female": "{Anna|Sarah|Sofia}"',
+                    },
+                ),
+                "seed": (
+                    "INT",
+                    {
+                        "default": 0,
+                        "min": 0,
+                        "max": 18446744073709551615,
+                        "control_after_generate": "randomize",
+                    },
+                ),
+                "trim": (
+                    "BOOLEAN",
+                    {
+                        "default": False,
+                    },
+                ),
+            },
+            "optional": {
+                "vars": (ARTEMKO7V_COMPLEX_PROMPT_VARS,),
+            },
+        }
+
+    def set_variable_by_choice(
+        self,
+        variable_name: str,
+        source_variable: str,
+        choices: str,
+        seed: int,
+        trim: bool = False,
+        vars: dict[str, str] | None = None,
+    ):
+        result = dict(vars or {})
+        source_variable = source_variable.strip()
+        if source_variable.startswith("$"):
+            source_variable = source_variable[1:]
+
+        if not source_variable or source_variable not in result:
+            return (result, False)
+
+        choice_map = parse_choice_map(choices)
+        source_value = str(result[source_variable])
+        value = choice_map.get(source_value, choice_map.get("__default__"))
+        if value is None:
+            return (result, False)
+
+        generated_value = generate_dynamic_prompt(value, seed)
+        stored_value = apply_vars(generated_value, vars)
+        if trim:
+            stored_value = stored_value.strip()
+
+        result[variable_name] = stored_value
+        return (result, True)
+
+
 class ArtemKo7vComplexPromptParseJSON:
     CATEGORY = "ArtemKo7v"
     RETURN_TYPES = (ARTEMKO7V_COMPLEX_PROMPT_VARS,)
@@ -421,6 +528,9 @@ class ArtemKo7vComplexPromptEmptyString:
 NODE_CLASS_MAPPINGS = {
     "ArtemKo7vComplexPrompt": ArtemKo7vComplexPrompt,
     "ArtemKo7vComplexPromptSetVariable": ArtemKo7vComplexPromptSetVariable,
+    "ArtemKo7vComplexPromptSetVariableByChoice": (
+        ArtemKo7vComplexPromptSetVariableByChoice
+    ),
     "ArtemKo7vComplexPromptParseJSON": ArtemKo7vComplexPromptParseJSON,
     "ArtemKo7vComplexPromptEmptyString": ArtemKo7vComplexPromptEmptyString,
 }
@@ -428,6 +538,9 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "ArtemKo7vComplexPrompt": "Complex Prompt",
     "ArtemKo7vComplexPromptSetVariable": "Complex Prompt Set Variable",
+    "ArtemKo7vComplexPromptSetVariableByChoice": (
+        "Complex Prompt Set Variable By Choice"
+    ),
     "ArtemKo7vComplexPromptParseJSON": "Complex Prompt Parse JSON",
     "ArtemKo7vComplexPromptEmptyString": "Complex Prompt Empty String",
 }

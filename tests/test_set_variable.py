@@ -68,6 +68,98 @@ class SetVariableNodeTests(unittest.TestCase):
         self.assertEqual(result, ({"name": "Ada", "greeting": "Ada"}, True))
 
 
+class SetVariableByChoiceNodeTests(unittest.TestCase):
+    def test_sets_variable_from_matching_source_value(self):
+        node = nodes.ArtemKo7vComplexPromptSetVariableByChoice()
+        generator = unittest.mock.Mock()
+        generator.generate.return_value = ["John"]
+
+        with patch.object(nodes, "get_prompt_generator", return_value=generator):
+            result = node.set_variable_by_choice(
+                "name",
+                "gender",
+                '"male": "{John|Bill|Ted}", "female": "{Anna|Sarah|Sofia}"',
+                seed=7,
+                vars={"gender": "male"},
+            )
+
+        generator.generate.assert_called_once_with(
+            "{John|Bill|Ted}",
+            1,
+            seeds=7,
+        )
+        self.assertEqual(result, ({"gender": "male", "name": "John"}, True))
+
+    def test_source_variable_can_include_dollar_prefix(self):
+        node = nodes.ArtemKo7vComplexPromptSetVariableByChoice()
+
+        result = node.set_variable_by_choice(
+            "name",
+            "$gender",
+            '{"female": "Anna"}',
+            seed=1,
+            vars={"gender": "female"},
+        )
+
+        self.assertEqual(result, ({"gender": "female", "name": "Anna"}, True))
+
+    def test_choice_value_can_use_existing_variables(self):
+        node = nodes.ArtemKo7vComplexPromptSetVariableByChoice()
+
+        result = node.set_variable_by_choice(
+            "name",
+            "gender",
+            '{"female": "$prefix Anna"}',
+            seed=1,
+            vars={"gender": "female", "prefix": "Dr."},
+        )
+
+        self.assertEqual(
+            result,
+            ({"gender": "female", "prefix": "Dr.", "name": "Dr. Anna"}, True),
+        )
+
+    def test_missing_choice_does_not_update_vars(self):
+        node = nodes.ArtemKo7vComplexPromptSetVariableByChoice()
+
+        result = node.set_variable_by_choice(
+            "name",
+            "gender",
+            '{"female": "Anna"}',
+            seed=1,
+            vars={"gender": "male"},
+        )
+
+        self.assertEqual(result, ({"gender": "male"}, False))
+
+    def test_default_choice_is_used_when_no_exact_match_exists(self):
+        node = nodes.ArtemKo7vComplexPromptSetVariableByChoice()
+
+        result = node.set_variable_by_choice(
+            "name",
+            "gender",
+            '{"__default__": "Alex"}',
+            seed=1,
+            vars={"gender": "unknown"},
+        )
+
+        self.assertEqual(result, ({"gender": "unknown", "name": "Alex"}, True))
+
+    def test_trim_removes_surrounding_whitespace_from_choice_value(self):
+        node = nodes.ArtemKo7vComplexPromptSetVariableByChoice()
+
+        result = node.set_variable_by_choice(
+            "name",
+            "gender",
+            '{"female": "  Anna\\n"}',
+            seed=1,
+            trim=True,
+            vars={"gender": "female"},
+        )
+
+        self.assertEqual(result, ({"gender": "female", "name": "Anna"}, True))
+
+
 class ComplexPromptNodeTests(unittest.TestCase):
     def test_plain_text_with_variable_does_not_call_dynamic_prompt_generator(self):
         node = nodes.ArtemKo7vComplexPrompt()
