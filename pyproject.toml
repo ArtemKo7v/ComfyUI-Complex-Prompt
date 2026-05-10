@@ -2,7 +2,7 @@
 [project]
 name = "comfyui-complex-prompt"
 description = "ComfyUI node for working with complex prompts with support for variables, randomness, and basic logic."
-version = "0.0.1"
+version = "0.1.0"
 license = { text = "MIT" }
 dependencies  = [
     "dynamicprompts>=0.31.0",
