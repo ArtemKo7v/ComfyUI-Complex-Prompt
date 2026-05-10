@@ -307,6 +307,18 @@ If `gender` is `male`, the node expands `{John|Bill|Ted}` and stores the generat
 
 `choices` may be a full JSON object with `{}` or a short JSON object body without the outer braces. If no exact choice exists, `__default__` is used when present. If no match and no default exist, `wasSet` is `false`.
 
+Simple workflow with explanatory notes:
+
+<img src="examples/example_wf_00.png" alt="Simple Complex Prompt workflow with notes" width="640">
+
+Complex prompt workflow for generating a person in a random city near a city landmark:
+
+<img src="examples/example_wf_01.png" alt="Complex Prompt workflow for a person in a city near a landmark" width="640">
+
+Z-Image workflow using a collapsed Complex Prompt workflow to build the image prompt:
+
+<img src="examples/example_wf_02.png" alt="Z-Image workflow using a collapsed Complex Prompt workflow" width="640">
+
 ## Configuration
 
 The configuration file is stored at:

@@ -1,0 +1,661 @@
+{
+  "id": "66d3d4e4-333e-43a8-a710-ce553dc3e0cb",
+  "revision": 0,
+  "last_node_id": 23,
+  "last_link_id": 29,
+  "nodes": [
+    {
+      "id": 9,
+      "type": "ArtemKo7vComplexPromptSetVariable",
+      "pos": [
+        -3986.807501602503,
+        -3085.9582555118513
+      ],
+      "size": [
+        233.1587890625,
+        228
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vars",
+          "shape": 7,
+          "type": "ArtemKo7vComplexPromptVars",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "vars",
+          "type": "ArtemKo7vComplexPromptVars",
+          "links": [
+            18
+          ]
+        },
+        {
+          "name": "wasSet",
+          "type": "BOOLEAN",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "ArtemKo7v/ComfyUI-Complex-Prompt",
+        "ver": "e3f014354b9c4bb67ef3730c46e3bce7c02710de",
+        "Node name for S&R": "ArtemKo7vComplexPromptSetVariable"
+      },
+      "widgets_values": [
+        "person",
+        "{man|woman}",
+        "",
+        340369592394061,
+        "randomize",
+        false
+      ]
+    },
+    {
+      "id": 20,
+      "type": "ArtemKo7vComplexPromptSetVariableByChoice",
+      "pos": [
+        -3732.162628080434,
+        -3086.688687638321
+      ],
+      "size": [
+        304.5123046875,
+        228
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vars",
+          "shape": 7,
+          "type": "ArtemKo7vComplexPromptVars",
+          "link": 18
+        }
+      ],
+      "outputs": [
+        {
+          "name": "vars",
+          "type": "ArtemKo7vComplexPromptVars",
+          "links": [
+            21
+          ]
+        },
+        {
+          "name": "wasSet",
+          "type": "BOOLEAN",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "ArtemKo7v/ComfyUI-Complex-Prompt",
+        "ver": "f45d744678bf533a1e1e1bfe0a26e5569d24359b",
+        "Node name for S&R": "ArtemKo7vComplexPromptSetVariableByChoice"
+      },
+      "widgets_values": [
+        "he_or_she",
+        "person",
+        "\"man\": \"he\", \"woman\": \"she\"",
+        995321432114467,
+        "randomize",
+        false
+      ]
+    },
+    {
+      "id": 21,
+      "type": "ArtemKo7vComplexPromptSetVariableByChoice",
+      "pos": [
+        -3372.4940177759095,
+        -3088.0230727484077
+      ],
+      "size": [
+        304.5123046875,
+        228
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vars",
+          "shape": 7,
+          "type": "ArtemKo7vComplexPromptVars",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "vars",
+          "type": "ArtemKo7vComplexPromptVars",
+          "links": [
+            22
+          ]
+        },
+        {
+          "name": "wasSet",
+          "type": "BOOLEAN",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "ArtemKo7v/ComfyUI-Complex-Prompt",
+        "ver": "f45d744678bf533a1e1e1bfe0a26e5569d24359b",
+        "Node name for S&R": "ArtemKo7vComplexPromptSetVariableByChoice"
+      },
+      "widgets_values": [
+        "name",
+        "person",
+        "\"man\": \"{Alex|John|Ivan}\",\n\"woman\": \"{Anna|Sofia|Marta}\"",
+        810503396462590,
+        "randomize",
+        false
+      ]
+    },
+    {
+      "id": 5,
+      "type": "ArtemKo7vComplexPromptSetVariable",
+      "pos": [
+        -3988.0742306531347,
+        -2743.5378795183306
+      ],
+      "size": [
+        233.1587890625,
+        228
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vars",
+          "shape": 7,
+          "type": "ArtemKo7vComplexPromptVars",
+          "link": 22
+        }
+      ],
+      "outputs": [
+        {
+          "name": "vars",
+          "type": "ArtemKo7vComplexPromptVars",
+          "links": [
+            24
+          ]
+        },
+        {
+          "name": "wasSet",
+          "type": "BOOLEAN",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "ArtemKo7v/ComfyUI-Complex-Prompt",
+        "ver": "e3f014354b9c4bb67ef3730c46e3bce7c02710de",
+        "Node name for S&R": "ArtemKo7vComplexPromptSetVariable"
+      },
+      "widgets_values": [
+        "country",
+        "{USA|Europe|Asia}",
+        "",
+        816155461882652,
+        "randomize",
+        false
+      ]
+    },
+    {
+      "id": 22,
+      "type": "ArtemKo7vComplexPromptSetVariableByChoice",
+      "pos": [
+        -3737.243514525689,
+        -2742.325521814655
+      ],
+      "size": [
+        368.57762674115236,
+        249.33631761494917
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vars",
+          "shape": 7,
+          "type": "ArtemKo7vComplexPromptVars",
+          "link": 24
+        }
+      ],
+      "outputs": [
+        {
+          "name": "vars",
+          "type": "ArtemKo7vComplexPromptVars",
+          "links": [
+            28
+          ]
+        },
+        {
+          "name": "wasSet",
+          "type": "BOOLEAN",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "ArtemKo7v/ComfyUI-Complex-Prompt",
+        "ver": "f45d744678bf533a1e1e1bfe0a26e5569d24359b",
+        "Node name for S&R": "ArtemKo7vComplexPromptSetVariableByChoice"
+      },
+      "widgets_values": [
+        "city",
+        "country",
+        "\"USA\": \"{New York|Seattle|San Francisco|Chicago}\",\n\"Europe\": \"{Paris|Berlin|Rome|Barcelona}\",\n\"Asia\": \"{Tokyo|Hanoi|Singapore|Seoul|Beijing|Bangkok}\"",
+        531175580617644,
+        "randomize",
+        false
+      ]
+    },
+    {
+      "id": 23,
+      "type": "ArtemKo7vComplexPromptSetVariableByChoice",
+      "pos": [
+        -3307.88727587711,
+        -2742.046961627357
+      ],
+      "size": [
+        529.2489412536778,
+        388.58123056719705
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vars",
+          "shape": 7,
+          "type": "ArtemKo7vComplexPromptVars",
+          "link": 28
+        }
+      ],
+      "outputs": [
+        {
+          "name": "vars",
+          "type": "ArtemKo7vComplexPromptVars",
+          "links": [
+            29
+          ]
+        },
+        {
+          "name": "wasSet",
+          "type": "BOOLEAN",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "ArtemKo7v/ComfyUI-Complex-Prompt",
+        "ver": "f45d744678bf533a1e1e1bfe0a26e5569d24359b",
+        "Node name for S&R": "ArtemKo7vComplexPromptSetVariableByChoice"
+      },
+      "widgets_values": [
+        "landmark",
+        "city",
+        "{\n  \"New York\": \"{Statue of Liberty|Times Square|Empire State Building}\",\n  \"Seattle\": \"{Space Needle|Pike Place Market|Mount Rainier}\",\n  \"San Francisco\": \"{Golden Gate Bridge|Alcatraz Island|Fisherman's Wharf}\",\n  \"Chicago\": \"{Cloud Gate|Willis Tower|Millennium Park}\",\n  \"Paris\": \"{Eiffel Tower|Louvre Museum|Notre-Dame Cathedral}\",\n  \"Berlin\": \"{Brandenburg Gate|Berlin Wall|Reichstag Building}\",\n  \"Rome\": \"{Colosseum|Trevi Fountain|Pantheon}\",\n  \"Barcelona\": \"{Sagrada Familia|Park Güell|Casa Batlló}\",\n  \"Tokyo\": \"{Tokyo Tower|Shibuya Crossing|Senso-ji Temple}\",\n  \"Hanoi\": \"{Hoan Kiem Lake|Temple of Literature|Ho Chi Minh Mausoleum}\",\n  \"Singapore\": \"{Marina Bay Sands|Merlion Park|Gardens by the Bay}\",\n  \"Seoul\": \"{Gyeongbokgung Palace|N Seoul Tower|Bukchon Hanok Village}\",\n  \"Beijing\": \"{Great Wall of China|Forbidden City|Temple of Heaven}\",\n  \"Bangkok\": \"{Grand Palace|Wat Arun|Wat Pho}\"\n}",
+        358881621658201,
+        "randomize",
+        false
+      ]
+    },
+    {
+      "id": 16,
+      "type": "ArtemKo7vComplexPromptSetVariable",
+      "pos": [
+        -3964.221907376651,
+        -2370.12305668453
+      ],
+      "size": [
+        233.1587890625,
+        228
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vars",
+          "shape": 7,
+          "type": "ArtemKo7vComplexPromptVars",
+          "link": 29
+        }
+      ],
+      "outputs": [
+        {
+          "name": "vars",
+          "type": "ArtemKo7vComplexPromptVars",
+          "links": [
+            16
+          ]
+        },
+        {
+          "name": "wasSet",
+          "type": "BOOLEAN",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "ArtemKo7v/ComfyUI-Complex-Prompt",
+        "ver": "e3f014354b9c4bb67ef3730c46e3bce7c02710de",
+        "Node name for S&R": "ArtemKo7vComplexPromptSetVariable"
+      },
+      "widgets_values": [
+        "clothes",
+        "{white|yellow|green} t-shirt with text \"I ❤️ {$city|$country}\" and {pants|jeans|shorts}",
+        "$person == \"man\"",
+        1103398020679808,
+        "randomize",
+        false
+      ]
+    },
+    {
+      "id": 17,
+      "type": "ArtemKo7vComplexPromptSetVariable",
+      "pos": [
+        -3701.635921778774,
+        -2369.689052147654
+      ],
+      "size": [
+        233.1587890625,
+        228
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vars",
+          "shape": 7,
+          "type": "ArtemKo7vComplexPromptVars",
+          "link": 16
+        }
+      ],
+      "outputs": [
+        {
+          "name": "vars",
+          "type": "ArtemKo7vComplexPromptVars",
+          "links": [
+            17
+          ]
+        },
+        {
+          "name": "wasSet",
+          "type": "BOOLEAN",
+          "links": null
+        }
+      ],
+      "properties": {
+        "aux_id": "ArtemKo7v/ComfyUI-Complex-Prompt",
+        "ver": "e3f014354b9c4bb67ef3730c46e3bce7c02710de",
+        "Node name for S&R": "ArtemKo7vComplexPromptSetVariable"
+      },
+      "widgets_values": [
+        "clothes",
+        "{white|yellow|pink} {t-shirt|cropped top} with text \"I ❤️ {$city|$country}\" and {jeans|skirt}",
+        "$person == \"woman\"",
+        135384809604004,
+        "randomize",
+        false
+      ]
+    },
+    {
+      "id": 12,
+      "type": "ArtemKo7vComplexPrompt",
+      "pos": [
+        -3401.3360197533248,
+        -2234.274945809822
+      ],
+      "size": [
+        389.9489657985182,
+        141.92735794699547
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vars",
+          "shape": 7,
+          "type": "ArtemKo7vComplexPromptVars",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "string",
+          "type": "STRING",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "ArtemKo7v/ComfyUI-Complex-Prompt",
+        "ver": "cb404dea00d9e1df3d71a976b00c8bc600258e57",
+        "Node name for S&R": "ArtemKo7vComplexPrompt"
+      },
+      "widgets_values": [
+        "A $person $name is travelling to $country, $he_or_she is visiting $city city. $he_or_she is wearing $clothes. $city cityscape and $landmark in the background. Text \"$name in $city\" at the bottom.",
+        233731325036438,
+        "randomize"
+      ]
+    },
+    {
+      "id": 13,
+      "type": "PreviewAny",
+      "pos": [
+        -2987.6437824583054,
+        -2235.7223056349226
+      ],
+      "size": [
+        377.5172366913598,
+        138.08046055143996
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "source",
+          "type": "*",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.20.1",
+        "Node name for S&R": "PreviewAny"
+      },
+      "widgets_values": [
+        null,
+        null,
+        null
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    }
+  ],
+  "links": [
+    [
+      8,
+      12,
+      0,
+      13,
+      0,
+      "STRING"
+    ],
+    [
+      16,
+      16,
+      0,
+      17,
+      0,
+      "ArtemKo7vComplexPromptVars"
+    ],
+    [
+      17,
+      17,
+      0,
+      12,
+      0,
+      "ArtemKo7vComplexPromptVars"
+    ],
+    [
+      18,
+      9,
+      0,
+      20,
+      0,
+      "ArtemKo7vComplexPromptVars"
+    ],
+    [
+      21,
+      20,
+      0,
+      21,
+      0,
+      "ArtemKo7vComplexPromptVars"
+    ],
+    [
+      22,
+      21,
+      0,
+      5,
+      0,
+      "ArtemKo7vComplexPromptVars"
+    ],
+    [
+      24,
+      5,
+      0,
+      22,
+      0,
+      "ArtemKo7vComplexPromptVars"
+    ],
+    [
+      28,
+      22,
+      0,
+      23,
+      0,
+      "ArtemKo7vComplexPromptVars"
+    ],
+    [
+      29,
+      23,
+      0,
+      16,
+      0,
+      "ArtemKo7vComplexPromptVars"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Gender",
+      "bounding": [
+        -4012.7718958238393,
+        -3173.487414276067,
+        610.7937923421468,
+        334.27999748171123
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "Name",
+      "bounding": [
+        -3387.3931974629118,
+        -3172.4666759138177,
+        341.3259715028107,
+        335.18459055984476
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "Location",
+      "bounding": [
+        -4012.202243121319,
+        -2826.9065384798782,
+        663.5378970991278,
+        352.98279905571326
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "Clothes",
+      "bounding": [
+        -4003.0240184700706,
+        -2454.824653574458,
+        561.6239632776951,
+        340.0898492699271
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "Background",
+      "bounding": [
+        -3331.479771714708,
+        -2822.8997189935158,
+        588.9764375956747,
+        495.62586911995004
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "Final Prompt",
+      "bounding": [
+        -3420.099936956211,
+        -2316.4378512711987,
+        834.6046380328348,
+        241.98916788054544
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8140274938684552,
+      "offset": [
+        4335.524076303636,
+        3279.391337975747
+      ]
+    },
+    "frontendVersion": "1.42.15",
+    "VHS_latentpreview": true,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}

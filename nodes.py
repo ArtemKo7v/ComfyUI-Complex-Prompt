@@ -414,7 +414,7 @@ class ArtemKo7vComplexPromptSetVariableByChoice:
                     {
                         "multiline": True,
                         "dynamicPrompts": False,
-                        "default": '"male": "{John|Bill|Ted}", "female": "{Anna|Sarah|Sofia}"',
+                        "default": "",
                     },
                 ),
                 "seed": (
