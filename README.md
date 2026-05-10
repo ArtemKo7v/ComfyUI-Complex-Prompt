@@ -2,6 +2,10 @@
 
 ComfyUI custom nodes for building complex text prompts with dynamic variants, workflow variables, JSON-imported variables, and basic conditional logic.
 
+Simple workflow with explanatory notes:
+
+<img src="examples/example_wf_00.png" alt="Simple Complex Prompt workflow with notes" width="640">
+
 ## Nodes
 
 Complex Prompt:
@@ -306,10 +310,6 @@ If `gender` is `male`, the node expands `{John|Bill|Ted}` and stores the generat
 ```
 
 `choices` may be a full JSON object with `{}` or a short JSON object body without the outer braces. If no exact choice exists, `__default__` is used when present. If no match and no default exist, `wasSet` is `false`.
-
-Simple workflow with explanatory notes:
-
-<img src="examples/example_wf_00.png" alt="Simple Complex Prompt workflow with notes" width="640">
 
 Complex prompt workflow for generating a person in a random city near a city landmark:
 
