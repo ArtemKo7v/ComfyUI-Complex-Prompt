@@ -4,7 +4,7 @@ ComfyUI custom nodes for building complex text prompts with dynamic variants, wo
 
 Simple workflow with explanatory notes:
 
-<img src="examples/example_wf_00.png" alt="Simple Complex Prompt workflow with notes" width="640">
+<img src="examples/example_wf_00.png" alt="Simple Complex Prompt workflow with notes" width="800">
 
 ## Nodes
 
@@ -313,11 +313,11 @@ If `gender` is `male`, the node expands `{John|Bill|Ted}` and stores the generat
 
 Complex prompt workflow for generating a person in a random city near a city landmark:
 
-<img src="examples/example_wf_01.png" alt="Complex Prompt workflow for a person in a city near a landmark" width="640">
+<img src="examples/example_wf_01.png" alt="Complex Prompt workflow for a person in a city near a landmark" width="800">
 
 Z-Image workflow using a collapsed Complex Prompt workflow to build the image prompt:
 
-<img src="examples/example_wf_02.png" alt="Z-Image workflow using a collapsed Complex Prompt workflow" width="640">
+<img src="examples/example_wf_02.png" alt="Z-Image workflow using a collapsed Complex Prompt workflow" width="800">
 
 ## Configuration
 
