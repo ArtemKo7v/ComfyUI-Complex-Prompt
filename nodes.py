@@ -177,11 +177,24 @@ def is_json_variable_value(value: Any) -> bool:
     return isinstance(value, (int, float, str)) and not isinstance(value, bool)
 
 
+def normalize_json_object_text(json_text: str) -> str:
+    json_text = json_text.strip()
+    if not json_text:
+        return "{}"
+
+    if json_text.startswith(("{", "[")):
+        return json_text
+
+    return "{" + json_text + "}"
+
+
 def parse_json_vars(
     json_text: str,
     seed: int,
     vars: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    json_text = normalize_json_object_text(json_text)
+
     try:
         parsed = json.loads(json_text)
     except json.JSONDecodeError as error:
@@ -485,6 +498,7 @@ class ArtemKo7vComplexPromptParseJSON:
                     {
                         "multiline": True,
                         "dynamicPrompts": False,
+                        "default": "",
                     },
                 ),
                 "seed": (

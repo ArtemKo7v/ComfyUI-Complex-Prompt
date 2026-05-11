@@ -25,6 +25,19 @@ class ParseJSONVarsTests(unittest.TestCase):
 
         self.assertEqual(result, {"name": "Ada", "age": 37, "score": 9.5})
 
+    def test_accepts_object_body_without_outer_braces(self):
+        result = nodes.parse_json_vars(
+            '"name": "Ada", "age": 37',
+            seed=1,
+        )
+
+        self.assertEqual(result, {"name": "Ada", "age": 37})
+
+    def test_empty_json_text_creates_empty_vars_like_empty_choices(self):
+        result = nodes.parse_json_vars("", seed=1)
+
+        self.assertEqual(result, {})
+
     def test_extends_existing_vars_and_overwrites_matching_keys(self):
         result = nodes.parse_json_vars(
             '{"name": "Ada", "age": 37}',
@@ -81,6 +94,16 @@ class ParseJSONNodeTests(unittest.TestCase):
         result = node.parse_json('{"name": "Ada"}', seed=1)
 
         self.assertEqual(result, ({"name": "Ada"},))
+
+    def test_json_text_input_matches_choices_text_widget_behavior(self):
+        json_text_config = nodes.ArtemKo7vComplexPromptParseJSON.INPUT_TYPES()[
+            "required"
+        ]["json_text"][1]
+        choices_config = nodes.ArtemKo7vComplexPromptSetVariableByChoice.INPUT_TYPES()[
+            "required"
+        ]["choices"][1]
+
+        self.assertEqual(json_text_config, choices_config)
 
 
 if __name__ == "__main__":
