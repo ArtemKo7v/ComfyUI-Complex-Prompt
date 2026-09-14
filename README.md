@@ -42,6 +42,14 @@ Complex Prompt Parse JSON:
 - Category: `ArtemKo7v`
 - Output vars: `ArtemKo7vComplexPromptVars`
 
+Complex Prompt Combine Vars:
+
+- Name: `Complex Prompt Combine Vars`
+- Class: `ArtemKo7vComplexPromptCombineVars`
+- Description: combines multiple `ComplexPromptVars` inputs in order; later inputs override matching keys from earlier inputs
+- Category: `ArtemKo7v`
+- Output vars: `ArtemKo7vComplexPromptVars`
+
 Complex Prompt Empty String:
 
 - Name: `Complex Prompt Empty String`

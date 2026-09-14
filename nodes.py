@@ -525,6 +525,37 @@ class ArtemKo7vComplexPromptParseJSON:
         return (parse_json_vars(json_text, seed, vars),)
 
 
+class ArtemKo7vComplexPromptCombineVars:
+    """Combines vars inputs in order, with later inputs taking precedence."""
+
+    CATEGORY = "ArtemKo7v"
+    MAX_VAR_INDEX = 64
+    RETURN_TYPES = (ARTEMKO7V_COMPLEX_PROMPT_VARS,)
+    RETURN_NAMES = ("vars",)
+    FUNCTION = "combine_vars"
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "vars_1": (ARTEMKO7V_COMPLEX_PROMPT_VARS,),
+            },
+            "optional": {
+                f"vars_{index}": (ARTEMKO7V_COMPLEX_PROMPT_VARS,)
+                for index in range(2, cls.MAX_VAR_INDEX + 1)
+            },
+        }
+
+    def combine_vars(self, vars_1: dict[str, Any], **kwargs):
+        result = dict(vars_1 or {})
+        for index in range(2, self.MAX_VAR_INDEX + 1):
+            vars = kwargs.get(f"vars_{index}")
+            if vars:
+                result.update(vars)
+
+        return (result,)
+
+
 class ArtemKo7vComplexPromptEmptyString:
     CATEGORY = "ArtemKo7v"
     RETURN_TYPES = ("STRING",)
@@ -546,6 +577,7 @@ NODE_CLASS_MAPPINGS = {
         ArtemKo7vComplexPromptSetVariableByChoice
     ),
     "ArtemKo7vComplexPromptParseJSON": ArtemKo7vComplexPromptParseJSON,
+    "ArtemKo7vComplexPromptCombineVars": ArtemKo7vComplexPromptCombineVars,
     "ArtemKo7vComplexPromptEmptyString": ArtemKo7vComplexPromptEmptyString,
 }
 
@@ -556,5 +588,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
         "Complex Prompt Set Variable By Choice"
     ),
     "ArtemKo7vComplexPromptParseJSON": "Complex Prompt Parse JSON",
+    "ArtemKo7vComplexPromptCombineVars": "Complex Prompt Combine Vars",
     "ArtemKo7vComplexPromptEmptyString": "Complex Prompt Empty String",
 }
