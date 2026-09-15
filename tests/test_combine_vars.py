@@ -45,15 +45,17 @@ class CombineVarsNodeTests(unittest.TestCase):
 
         self.assertEqual(first_vars, {"subject": "Ada"})
 
-    def test_declares_only_first_input_as_required(self):
+    def test_declares_only_first_input_in_backend_schema(self):
         input_types = nodes.ArtemKo7vComplexPromptCombineVars.INPUT_TYPES()
 
         self.assertEqual(
-            input_types["required"],
-            {"vars_1": (nodes.ARTEMKO7V_COMPLEX_PROMPT_VARS,)},
+            input_types,
+            {
+                "required": {
+                    "vars_1": (nodes.ARTEMKO7V_COMPLEX_PROMPT_VARS,),
+                },
+            },
         )
-        self.assertIn("vars_2", input_types["optional"])
-        self.assertIn("vars_64", input_types["optional"])
 
 
 if __name__ == "__main__":

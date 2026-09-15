@@ -540,10 +540,6 @@ class ArtemKo7vComplexPromptCombineVars:
             "required": {
                 "vars_1": (ARTEMKO7V_COMPLEX_PROMPT_VARS,),
             },
-            "optional": {
-                f"vars_{index}": (ARTEMKO7V_COMPLEX_PROMPT_VARS,)
-                for index in range(2, cls.MAX_VAR_INDEX + 1)
-            },
         }
 
     def combine_vars(self, vars_1: dict[str, Any], **kwargs):
