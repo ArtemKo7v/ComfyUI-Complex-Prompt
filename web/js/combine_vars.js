@@ -57,8 +57,13 @@ function normalize(node) {
             inputs = varsInputs(node);
         }
 
-        while (inputs.length > 1 && inputs.at(-1).input.link == null) {
-            removeLastInput(node, inputs.at(-1));
+        while (inputs.length > 1) {
+            last = inputs.at(-1);
+            const previous = inputs.at(-2);
+            if (last.input.link != null || previous.input.link != null) {
+                break;
+            }
+            removeLastInput(node, last);
             inputs = varsInputs(node);
         }
     } finally {
