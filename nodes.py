@@ -48,7 +48,7 @@ CONFIG = load_config()
 
 ARTEMKO7V_COMPLEX_PROMPT_VARS = "ArtemKo7vComplexPromptVars"
 VAR_PATTERN = re.compile(r"\$([A-Za-z_][A-Za-z0-9_]*)")
-DYNAMIC_VARIANT_PATTERN = re.compile(r"\{[^{}]*\|[^{}]*\}")
+DYNAMIC_VARIANT_PATTERN = re.compile(r"\{[^{}]*\}")
 
 _PROMPT_GENERATOR = None
 
@@ -153,7 +153,8 @@ def generate_dynamic_prompt(prompt: str | None, seed: int) -> str:
         return prompt
 
     generator = get_prompt_generator()
-    prompts = generator.generate(masked_prompt, 1, seeds=seed)
+    # dynamicprompts treats the integer 0 as an omitted seed; [0] is explicit.
+    prompts = generator.generate(masked_prompt, 1, seeds=[0] if seed == 0 else seed)
     generated_prompt = prompts[0] if prompts else ""
     return restore_vars(generated_prompt, placeholders)
 
@@ -171,6 +172,30 @@ def apply_vars(prompt: str, vars: dict[str, str] | None = None) -> str:
         return str(vars[variable_name])
 
     return VAR_PATTERN.sub(replace, prompt)
+
+
+def resolve_prompt(
+    prompt: str | None,
+    seed: int,
+    vars: dict[str, Any] | None = None,
+) -> str:
+    """Expand choices, then recursively resolve the selected variable values."""
+    def resolve(value: str | None, resolving: frozenset[str]) -> str:
+        generated = generate_dynamic_prompt(value, seed)
+        if not vars:
+            return generated
+
+        def replace(match: re.Match[str]) -> str:
+            name = match.group(1)
+            # Keep unknown and cyclic references visible without expanding forever.
+            if name not in vars or name in resolving:
+                return match.group(0)
+
+            return resolve(str(vars[name]), resolving | {name})
+
+        return VAR_PATTERN.sub(replace, generated)
+
+    return resolve(prompt, frozenset())
 
 
 def is_json_variable_value(value: Any) -> bool:
@@ -323,8 +348,7 @@ class ArtemKo7vComplexPrompt:
         seed: int,
         vars: dict[str, str] | None = None,
     ):
-        generated_prompt = generate_dynamic_prompt(prompt, seed)
-        return (apply_vars(generated_prompt, vars),)
+        return (resolve_prompt(prompt, seed, vars),)
 
 
 class ArtemKo7vComplexPromptSetVariable:
@@ -391,8 +415,7 @@ class ArtemKo7vComplexPromptSetVariable:
             return (result, False)
 
         value = "" if value is None else value
-        generated_value = generate_dynamic_prompt(value, seed)
-        stored_value = apply_vars(generated_value, vars)
+        stored_value = resolve_prompt(value, seed, vars)
         if trim:
             stored_value = stored_value.strip()
 
@@ -474,8 +497,7 @@ class ArtemKo7vComplexPromptSetVariableByChoice:
         if value is None:
             return (result, False)
 
-        generated_value = generate_dynamic_prompt(value, seed)
-        stored_value = apply_vars(generated_value, vars)
+        stored_value = resolve_prompt(value, seed, vars)
         if trim:
             stored_value = stored_value.strip()
 

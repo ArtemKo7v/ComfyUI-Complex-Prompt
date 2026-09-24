@@ -12,7 +12,7 @@ Complex Prompt:
 
 - Name: `Complex Prompt`
 - Class: `ArtemKo7vComplexPrompt`
-- Description: expands a prompt with `dynamicprompts`, then replaces `$variable_name` tokens from `ComplexPromptVars`
+- Description: expands a prompt with `dynamicprompts`, then recursively resolves `$variable_name` tokens and variants in their values from `ComplexPromptVars`
 - Category: `ArtemKo7v`
 - Output string: `STRING`
 
@@ -62,7 +62,7 @@ Complex Prompt Empty String:
 
 - Expands dynamic prompt syntax through `dynamicprompts`, including variants such as `{red|green|blue}`
 - Preserves `$variable_name` tokens while `dynamicprompts` parses the prompt
-- Replaces variables after dynamic prompt expansion
+- Resolves variables after dynamic prompt expansion, including variants and variable references inside their values
 - Passes `ComplexPromptVars` between nodes
 - Creates variables from multiline text
 - Creates dependent variables by matching another variable's value
@@ -112,6 +112,15 @@ $person in a {red|green|blue} car
 ```
 
 If `person` exists in `vars`, `$person` is replaced with its value after dynamic prompt expansion. If it does not exist, `$person` remains unchanged.
+
+Variable values can contain variants and references to other variables. For example,
+with `var1 = {red|blue}` and `var2 = {green|yellow}`, `{$var1|$var2}` produces
+one color with no leftover braces. References can be resolved after merging branches
+with `Complex Prompt Combine Vars`.
+
+Braces are dynamic prompt syntax even for a single option: `{red}` and `{{red}}`
+both produce `red`, and `{}` produces an empty string. Cyclic variable references
+stop at the repeated variable and leave its `$variable_name` token visible.
 
 Variable tokens match this pattern:
 
@@ -339,7 +348,7 @@ The file is created automatically. The current default configuration is empty an
 
 ## Notes
 
-- Dynamic prompt expansion runs before variable replacement.
+- Dynamic prompt expansion runs before variable replacement at each level. Selected variable values are expanded recursively with the node's seed.
 - `Complex Prompt Set Variable` also expands dynamic prompt syntax in `value` before storing it.
 - `Complex Prompt Set Variable By Choice` expands dynamic prompt syntax in the matched choice before storing it.
 - When `trim` is enabled, trimming happens after dynamic prompt expansion and variable replacement.
